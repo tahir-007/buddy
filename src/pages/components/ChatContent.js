@@ -90,7 +90,7 @@ const ChatContent = () => {
   return (
     <>
       <div className="lg:mx-40 text-xs lg:text-sm mt-10 mb-24">
-        {chatLog.map((message, index) => (
+        {chatLog?.map((message, index) => (
           <div
             key={index}
             className={`flex my-4 ${

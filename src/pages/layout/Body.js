@@ -7,7 +7,7 @@ const Body = () => {
   return (
     <div className="flex justify-center">
       <p className="mx-6">
-        Let's learn together. Buddy.ai is powered by AI, so surprises and
+        Lets learn together. Buddy.ai is powered by AI, so surprises and
         mistakes are possible.
       </p>
     </div>

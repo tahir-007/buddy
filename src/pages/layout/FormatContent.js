@@ -31,22 +31,22 @@ const InlineCode = ({ value }) => {
 // FormatContent component to format content with code blocks and inline code
 const FormatContent = ({ value }) => {
   // Split the value into segments based on code blocks
-  const segments = value.split(/(```[\s\S]*?```)/);
+  const segments = value?.split(/(```[\s\S]*?```)/);
 
   // Return a div containing the formatted content
   return (
     <div>
-      {segments.map((segment, index) => {
+      {segments?.map((segment, index) => {
         // If the segment is a code block, return a CodeBlock component
-        if (segment.startsWith("```") && segment.endsWith("```")) {
+        if (segment?.startsWith("```") && segment.endsWith("```")) {
           const code = segment.slice(3, -3);
           return <CodeBlock key={index} value={code} />;
         } else {
           // Otherwise, split the segment into inline segments based on inline code
-          const inlineSegments = segment.split(/(`[\s\S]*?`)/);
+          const inlineSegments = segment?.split(/(`[\s\S]*?`)/);
           return (
             <p key={index}>
-              {inlineSegments.map((inlineSegment, inlineIndex) => {
+              {inlineSegments?.map((inlineSegment, inlineIndex) => {
                 // If the inline segment is inline code, return an InlineCode component
                 if (
                   inlineSegment.startsWith("`") &&
