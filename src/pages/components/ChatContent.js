@@ -89,7 +89,7 @@ const ChatContent = () => {
 
   return (
     <>
-      <div className="lg:mx-40 text-xs lg:text-sm mt-10 mb-24">
+      <div className="lg:mx-40 text-sm mt-10 mb-24">
         {chatLog?.map((message, index) => (
           <div
             key={index}
@@ -101,8 +101,8 @@ const ChatContent = () => {
               className={`${
                 message.type === "user"
                   ? "bg-gradient-to-tr from-cyan-900 to-indigo-900 text-gray-100"
-                  : "bg-gray-100 dark:bg-gray-700"
-              } rounded-lg p-2 text-gray-800 dark:text-gray-300 max-w-sm mx-4`}
+                  : "bg-gray-100 text-gray-800 dark:bg-gray-700"
+              } rounded-lg p-2 dark:text-gray-300 max-w-sm mx-4`}
             >
               <FormatContent value={message.message} />
             </div>
@@ -117,7 +117,7 @@ const ChatContent = () => {
         )}
       </div>
       <div className="fixed bottom-0 w-full bg-white dark:bg-gray-800">
-        <form className="lg:mx-40">
+        <form className="lg:mx-40 mr-10">
           <div className="flex items-end py-2 rounded-lg bg-gray-100 dark:bg-gray-700">
             <button
               type="button"
