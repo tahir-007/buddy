@@ -10,6 +10,10 @@ const ChatContent = () => {
   const [chatLog, setChatLog] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, [chatLog]);
+
   // Function to handle changes to the text in the textarea
   const handleTextChange = (event) => {
     // Limit the length of the text to 2000 characters
@@ -29,7 +33,7 @@ const ChatContent = () => {
     }
 
     // Resize the textarea based on its content
-    if (event.target.value.length === 0) {
+    if (event?.target.value.length === 0) {
       event.target.rows = 1;
     } else {
       event.target.rows = Math.ceil(event.target.value.length / divisor);
@@ -45,6 +49,7 @@ const ChatContent = () => {
     ]);
     sendMessage(text);
     setText("");
+    event.target.rows = 1;
   };
 
   const sendMessage = async (message) => {
@@ -80,6 +85,7 @@ const ChatContent = () => {
 
       // Set the loading state to false
       setIsLoading(false);
+      window.scrollTo(0, document.body.scrollHeight);
     } catch (err) {
       // If an error occurs, set the loading state to false and log the error to the console
       setIsLoading(false);
@@ -100,7 +106,7 @@ const ChatContent = () => {
             <div
               className={`${
                 message.type === "user"
-                  ? "bg-gradient-to-tr from-cyan-900 to-indigo-900 text-gray-100"
+                  ? "bg-gradient-to-tr from-cyan-900 to-indigo-900 text-gray-100 whitespace-pre-wrap"
                   : "bg-gray-100 text-gray-800 dark:bg-gray-700"
               } rounded-lg p-2 dark:text-gray-300 max-w-sm mx-4`}
             >
@@ -117,7 +123,7 @@ const ChatContent = () => {
         )}
       </div>
       <div className="fixed bottom-0 w-full bg-white dark:bg-gray-800">
-        <form className="lg:mx-40 mr-10">
+        <form className="lg:mx-40 mr-10 " onSubmit={handleClick}>
           <div className="flex items-end py-2 rounded-lg bg-gray-100 dark:bg-gray-700">
             <button
               type="button"
