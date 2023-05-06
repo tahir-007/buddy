@@ -3,6 +3,7 @@ import { BiMessageDots } from "react-icons/bi";
 import { IoMdSend } from "react-icons/io";
 import axios from "axios";
 import FormatContent from "../layout/FormatContent";
+import LoadingIcon from "../utils/LoadingIcon";
 
 const ChatContent = () => {
   // State variable to keep track of the text in the textarea
@@ -52,40 +53,73 @@ const ChatContent = () => {
     event.target.rows = 1;
   };
 
+  let apiCallCount = 0;
+  let lastApiCallDate = null;
+
   const sendMessage = async (message) => {
     try {
-      // Define the data to send in the POST request
-      const data = {
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: message }],
-        temperature: 0.7,
-      };
+      // Get the apiCallCount and lastApiCallDate from local storage
+      let apiCallCount = parseInt(localStorage.getItem("apiCallCount")) || 0;
+      let lastApiCallDate = localStorage.getItem("lastApiCallDate");
 
-      // Define the headers for the POST request
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-      };
+      // Check if the current date is different from the date of the last API call
+      const currentDate = new Date().toDateString();
+      if (lastApiCallDate !== currentDate) {
+        // If it is, reset the count to 0
+        apiCallCount = 0;
+        lastApiCallDate = currentDate;
+        localStorage.setItem("apiCallCount", apiCallCount);
+        localStorage.setItem("lastApiCallDate", lastApiCallDate);
+      }
 
-      // Set the loading state to true
-      setIsLoading(true);
+      // Check if the count is less than 3
+      if (apiCallCount < 5) {
+        // If it is, increment the count and proceed with the API call
+        apiCallCount++;
+        localStorage.setItem("apiCallCount", apiCallCount);
 
-      // Send a POST request to the OpenAI API using axios
-      const res = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
-        data,
-        { headers }
-      );
+        // Define the data to send in the POST request
+        const data = {
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: message }],
+          temperature: 0.7,
+        };
 
-      // Update the chat log with the response from the OpenAI API
-      setChatLog((prevChatLog) => [
-        ...prevChatLog,
-        { type: "bot", message: res.data.choices[0].message.content },
-      ]);
+        // Define the headers for the POST request
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        };
 
-      // Set the loading state to false
-      setIsLoading(false);
-      window.scrollTo(0, document.body.scrollHeight);
+        // Set the loading state to true
+        setIsLoading(true);
+
+        // Send a POST request to the OpenAI API using axios
+        const res = await axios.post(
+          "https://api.openai.com/v1/chat/completions",
+          data,
+          { headers }
+        );
+
+        // Update the chat log with the response from the OpenAI API
+        setChatLog((prevChatLog) => [
+          ...prevChatLog,
+          { type: "bot", message: res.data.choices[0].message.content },
+        ]);
+
+        // Set the loading state to false
+        setIsLoading(false);
+        window.scrollTo(0, document.body.scrollHeight);
+      } else {
+        // If it is not, show an error message
+        setChatLog((prevChatLog) => [
+          ...prevChatLog,
+          {
+            type: "bot",
+            message: "You have exceeded your daily limit of 5 API calls.",
+          },
+        ]);
+      }
     } catch (err) {
       // If an error occurs, set the loading state to false and log the error to the console
       setIsLoading(false);
@@ -108,16 +142,16 @@ const ChatContent = () => {
                 message.type === "user"
                   ? "bg-gradient-to-tr from-cyan-900 to-indigo-900 text-gray-100 whitespace-pre-wrap"
                   : "bg-gray-100 text-gray-800 dark:bg-gray-700"
-              } rounded-lg p-2 dark:text-gray-300 max-w-sm mx-4`}
+              } rounded-lg p-2 dark:text-gray-300 max-w-sm lg:max-w-screen-md mx-4`}
             >
               <FormatContent value={message.message} />
             </div>
           </div>
         ))}
         {isLoading && (
-          <div key={chatLog.length} className="flex justify-start">
+          <div key={chatLog.length} className="flex justify-start mx-4">
             <div className="bg-gray-600 rounded-lg p-2 text-gray-200 max-w-sm">
-              Typing....
+              <LoadingIcon />
             </div>
           </div>
         )}

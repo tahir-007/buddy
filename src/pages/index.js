@@ -1,11 +1,6 @@
 // Importing required modules
-import Image from "next/image";
 import Head from "next/head";
-import { Inter } from "next/font/google";
 import HomePage from "./HomePage";
-
-// Setting up Inter font with latin subset
-const inter = Inter({ subsets: ["latin"] });
 
 // Exporting Home component
 export default function Home() {
